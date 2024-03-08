@@ -1,0 +1,34 @@
+{
+  "name": "@jeffklein/sample-package",
+  "version": "0.0.2",
+  "description": "This is a template for a new package in ads-common.",
+  "main": "./src/index.ts",
+  "module": "./dist/index.js",
+  "scripts": {
+    "test": "test",
+    "build": "yarn && yarn fix && rollup --bundleConfigAsCjs -c rollup.config.cjs",
+    "dev-build": "yarn && rollup --bundleConfigAsCjs --watch -c rollup.config.cjs",
+    "prettier": "npx prettier src --write",
+    "lint": "npx eslint src --fix",
+    "fix": "yarn prettier && yarn lint"
+  },
+  "keywords": [
+    "webcomponents",
+    "lit"
+  ],
+  "author": "Internet Archive",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "lit": "^3.1.2"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.12.1",
+    "ts-lit-plugin": "^2.0.2",
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.2"
+  }
+}
