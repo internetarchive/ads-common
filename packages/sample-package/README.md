@@ -27,6 +27,6 @@ on the Archiving & Data Services (ADS) team at the Internet Archive.
 
 - ✅ prettier
 - ✅ linter
-- test?
 - ✅ small bundle for publishing
-- storybook?
+- ✅ storybook
+- testing? (storybook can cover this in a QA sense)
