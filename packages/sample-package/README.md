@@ -7,7 +7,10 @@ on the Archiving & Data Services (ADS) team at the Internet Archive.
 
 ### Changing existing components
 
-- TODO: add local dev environment guidance with storybook and/or `yarn link`.
+- In separate tabs, run `yarn dev` in the root and `yarn dev` from within the package folder(s)
+  you are making changes to.
+- Now, changes you make to code files in `packages/*/src` and `storybook.html` should
+  auto-appear on save at http://127.0.0.1:8001/storybook.html.
 - Make the code changes on a new branch, open an MR against `master`.
 - In your changes, make sure you increment the version number in the `package.json` file
   in each of the packages you have made changes to. For breaking changes,
@@ -21,6 +24,7 @@ on the Archiving & Data Services (ADS) team at the Internet Archive.
 ### Creating a new component
 
 - Copy the template in `packages/sample-component` and rename it to your new component.
+- add the component's `dist` path to `storybook.html` to introduce it there.
 - Once your component exists, follow the steps for changing existing components (above).
 
 # Sample component TODOs:

@@ -2,7 +2,6 @@
   "name": "ads-common",
   "version": "0.0.0",
   "description": "This is a library of web components and various utilities in use by the frontend developers on the Archiving & Data services team (ADS) at the Internet Archive.",
-  "main": "index.js",
   "scripts": {
     "fix": "yarn prettier && yarn lint",
     "prettier": "prettier packages --write",
@@ -12,6 +11,8 @@
   "author": "Internet Archive",
   "license": "GPL-3.0",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
     "eslint": "^8.57.0",
