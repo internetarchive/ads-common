@@ -10,4 +10,7 @@ export default {
     format: "esm",
   },
   plugins: [nodeResolve(), commonjs(), typescript()],
+  watch: {
+    exclude: ['node_modules/**'],
+  }
 };

@@ -7,7 +7,6 @@
   "scripts": {
     "test": "test",
     "build": "yarn && yarn fix && rollup --bundleConfigAsCjs -c rollup.config.cjs",
-    "dev-build": "yarn && rollup --bundleConfigAsCjs --watch -c rollup.config.cjs",
     "prettier": "npx prettier src --write",
     "lint": "npx eslint src --fix",
     "fix": "yarn prettier && yarn lint"

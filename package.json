@@ -6,7 +6,8 @@
   "scripts": {
     "fix": "yarn prettier && yarn lint",
     "prettier": "prettier packages --write",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "dev": "rollup --bundleConfigAsCjs -c rollup.config.dev.cjs"
   },
   "author": "Internet Archive",
   "license": "GPL-3.0",
@@ -15,6 +16,8 @@
     "@typescript-eslint/parser": "^7.1.1",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
+    "rollup": "^4.12.1",
+    "rollup-plugin-live-server": "^2.0.0",
     "typescript": "5.3.3"
   }
 }

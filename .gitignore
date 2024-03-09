@@ -1,5 +1,6 @@
 *.swp
 .rollup.cache
 .idea
+.storybook
 dist
 node_modules

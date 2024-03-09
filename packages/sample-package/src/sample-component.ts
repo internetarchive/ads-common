@@ -23,7 +23,7 @@ export class SampleComponent extends LitElement {
 
   static styles = css`
     h3 {
-      color: red;
+      color: blue;
     }
 
     button {
