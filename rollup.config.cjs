@@ -1,17 +1,22 @@
 import { nodeResolve } from "@rollup/plugin-node-resolve";
-import commonJs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
+import commonJs from "@rollup/plugin-commonjs";
 import minify from "rollup-plugin-minify";
 
 export default {
-  input: "src/index.ts",
+  input: "index.js",
   output: {
-    file: "dist/index.js",
+    file: ".storybook/index.js",
     sourcemap: true,
     format: "esm",
   },
-  plugins: [nodeResolve(), commonJs(), typescript(), minify()],
+  plugins: [
+    nodeResolve(),
+    commonJs(),
+    typescript(),
+    minify(),
+  ],
   watch: {
-    exclude: ["node_modules/**"],
-  },
+    exclude: ['node_modules/**'],
+  }
 };

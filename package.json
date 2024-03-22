@@ -6,19 +6,25 @@
     "fix": "yarn prettier && yarn lint",
     "prettier": "prettier packages --write",
     "lint": "eslint . --fix",
-    "dev": "rollup --bundleConfigAsCjs -c rollup.config.dev.cjs"
+    "dev": "rollup --bundleConfigAsCjs -w -c rollup.config.dev.cjs",
+    "build": "rollup --bundleConfigAsCjs -c rollup.config.cjs"
   },
   "author": "Internet Archive",
   "license": "GPL-3.0",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
     "eslint": "^8.57.0",
+    "mkdirp": "^3.0.1",
     "prettier": "^3.2.5",
     "rollup": "^4.12.1",
     "rollup-plugin-live-server": "^2.0.0",
+    "rollup-plugin-minify": "^1.0.3",
+    "tslib": "^2.6.2",
     "typescript": "5.3.3"
-  }
+  },
+  "dependencies": {}
 }

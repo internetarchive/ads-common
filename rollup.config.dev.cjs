@@ -1,6 +1,8 @@
 import { liveServer } from 'rollup-plugin-live-server';
 import { nodeResolve } from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
+import typescript from "@rollup/plugin-typescript";
+import commonJs from "@rollup/plugin-commonjs";
+import minify from "rollup-plugin-minify";
 
 export default {
   input: "index.js",
@@ -14,13 +16,15 @@ export default {
       port: 8001,
       host: "0.0.0.0",
       root: "demo",
-      file: "storybook.html",
+      file: ".storybook/index.js",
       mount: [['/', './']],
       open: false,
       wait: 500
     }),
     nodeResolve(),
-    commonjs(),
+    commonJs(),
+    typescript(),
+    minify(),
   ],
   watch: {
     exclude: ['node_modules/**'],

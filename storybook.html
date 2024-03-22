@@ -3,13 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title>ADS Components</title>
-  <!--- import built WCs here. -->
-  <script src="packages/sample-package/dist/index.js" type="module"></script>
+  <!--- import built stories here. -->
+  <script src=".storybook/index.js" type="module"></script>
+  <!--- -->
 </head>
 <body>
 <!--- TODO: rollup header and other controls into storybook helper pkg / wrapper story WC -->
 <h1>Sample Component</h1>
-<sample-component text="Hi Jeff"></sample-component>
-<sample-component text="Hi There Jeff"></sample-component>
+<sample-component-storybook></sample-component-storybook>
+
+<!--- TODO: move button story to its own WC -->
+<h1>Button</h1>
+<ads-button-storybook></ads-button-storybook>
 </body>
 </html>
