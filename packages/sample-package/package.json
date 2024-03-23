@@ -10,7 +10,8 @@
     "dev": "yarn && rollup --bundleConfigAsCjs -w -c rollup.config.cjs",
     "prettier": "npx prettier src --write",
     "lint": "npx eslint src --fix",
-    "fix": "yarn prettier && yarn lint"
+    "fix": "yarn prettier && yarn lint",
+    "publish": "yarn build && npm publish --access public"
   },
   "keywords": [
     "webcomponents",

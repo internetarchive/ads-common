@@ -1,7 +1,7 @@
 {
-  "name": "@jeffklein/ads-button",
+  "name": "@jeffklein/ads-library",
   "version": "0.0.0",
-  "description": "This is a button web component.",
+  "description": "This is a home for common library and helper functions in use by the Internet Archive's Archiving and Data Services team.",
   "main": "./src/index.ts",
   "module": "./dist/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "prettier": "npx prettier src --write",
     "lint": "npx eslint src --fix",
     "fix": "yarn prettier && yarn lint",
-    "publish": "yarn build && npm publish --access public"
+    "public": "yarn build && npm publish --access public"
   },
   "keywords": [
     "webcomponents",
@@ -28,7 +28,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.6",
     "mkdirp": "^3.0.1",
-    "rollup": "^4.12.1",
+    "rollup": "^4.13.0",
     "rollup-plugin-minify": "^1.0.3",
     "ts-lit-plugin": "^2.0.2",
     "tslib": "^2.6.2",
