@@ -1,6 +1,6 @@
 {
   "name": "@jeffklein/ads-button",
-  "version": "0.0.0",
+  "version": "0.0.6",
   "description": "This is a button web component.",
   "main": "./src/index.ts",
   "module": "./dist/index.js",
@@ -11,7 +11,7 @@
     "prettier": "npx prettier src --write",
     "lint": "npx eslint src --fix",
     "fix": "yarn prettier && yarn lint",
-    "publish": "yarn build && npm publish --access public"
+    "release": "yarn build && yarn publish --access public"
   },
   "keywords": [
     "webcomponents",
