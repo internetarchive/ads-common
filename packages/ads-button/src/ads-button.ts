@@ -70,13 +70,22 @@ export class AdsButton extends LitElement {
       // --ads-button-text-color
       // --ads-button-border-color
       */
-     
+
       /* create local copies falling back on default colors */
-      --ads-button-background-color--: var(--ads-button-background-color, var(--ads-primary-theme, #2e7cb2));
-      --ads-button-border-color--: var(--ads-button-border-color, var(--ads-primary-theme-alt, #194865));
-      --ads-button-text-color--: var(--ads-button-text-color, var(--ads-primary-theme-text, white));
+      --ads-button-background-color--: var(
+        --ads-button-background-color,
+        var(--ads-primary-theme, #2e7cb2)
+      );
+      --ads-button-border-color--: var(
+        --ads-button-border-color,
+        var(--ads-primary-theme-alt, #194865)
+      );
+      --ads-button-text-color--: var(
+        --ads-button-text-color,
+        var(--ads-primary-theme-text, white)
+      );
     }
-   
+
     button {
       cursor: pointer;
       padding: 4px 12px;
@@ -94,9 +103,9 @@ export class AdsButton extends LitElement {
       color: var(--ads-button-text-color--);
       border: 1px solid var(--ads-button-border-color--);
     }
-   
+
     button:hover:not(.disabled) {
-      filter: brightness(92%)
+      filter: brightness(92%);
     }
 
     /* SECONDARY styles */

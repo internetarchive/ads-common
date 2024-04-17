@@ -1,6 +1,10 @@
 import { html, css, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
-import "./ads-button"
+
+// TODO: restore this import, right now the ads-modal storybook's
+// inclusion of ads-button package triggers an error for the duplicate
+// call to customElement() for ads-button.
+// import "./ads-button";
 
 @customElement("ads-button-storybook")
 export class AdsButtonStorybook extends LitElement {
@@ -21,16 +25,16 @@ export class AdsButtonStorybook extends LitElement {
     div {
       padding-bottom: 10px;
     }
-   
+
     :root {
       --ads-primary-theme: black;
     }
-   
+
     .sample1 {
       --ads-button-background-color: #bada55;
       --ads-button-text-color: #442200;
     }
-   
+
     .sample2 {
       --ads-button-background-color: lightblue;
       --ads-button-text-color: firebrick;

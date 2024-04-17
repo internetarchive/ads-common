@@ -1,7 +1,7 @@
 {
-  "name": "@jeffklein/ads-library",
-  "version": "0.0.0",
-  "description": "This is a home for common library and helper functions in use by the Internet Archive's Archiving and Data Services team.",
+  "name": "@jeffklein/sample-package",
+  "version": "0.0.2",
+  "description": "This is a template for a new package in ads-common.",
   "main": "./src/index.ts",
   "module": "./dist/index.js",
   "scripts": {
@@ -20,15 +20,17 @@
   "author": "Internet Archive",
   "license": "AGPL-3.0",
   "dependencies": {
+    "@jeffklein/ads-button": "^0.0.7",
     "lit": "^3.1.2"
   },
   "peerDependencies": {},
   "devDependencies": {
+    "@jeffklein/ads-library": "^0.0.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.6",
     "mkdirp": "^3.0.1",
-    "rollup": "^4.13.0",
+    "rollup": "^4.12.1",
     "rollup-plugin-minify": "^1.0.3",
     "ts-lit-plugin": "^2.0.2",
     "tslib": "^2.6.2",

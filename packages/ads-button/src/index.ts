@@ -1,1 +1,1 @@
-export { AdsButton } from "./ads-button";
+export { AdsButton, AdsButtonTypes } from "./ads-button";
