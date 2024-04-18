@@ -11,4 +11,5 @@ export {
   SortComparisonResult,
   NonSortable,
   UndefinedHelpers,
+  FromKey,
 } from "./types";
