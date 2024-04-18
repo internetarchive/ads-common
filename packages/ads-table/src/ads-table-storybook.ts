@@ -94,14 +94,9 @@ const rows: TableRow<PersonData>[] = [
 
 @customElement("ads-table-storybook")
 export class AdsTableStorybook extends LitElement {
-
   render() {
     return html`
-      <ads-simple-table
-        .columns=${columns}
-        .rows=${rows}
-      >
-      </ads-simple-table>
+      <ads-simple-table .columns=${columns} .rows=${rows}> </ads-simple-table>
     `;
   }
 

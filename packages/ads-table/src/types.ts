@@ -109,7 +109,8 @@ export const FromKey = <S, T>(
   key: keyof T,
 ): TableDataType<T> => ({
   ...targetDataType,
-  compare: (a: T, b: T) => targetDataType.compare?.(a[key] as S, b[key] as S) || 0,
+  compare: (a: T, b: T) =>
+    targetDataType.compare?.(a[key] as S, b[key] as S) || 0,
   format: (item: T) => targetDataType.format(item[key] as S),
 });
 
