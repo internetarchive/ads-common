@@ -1,6 +1,6 @@
 {
-  "name": "@jeffklein/ads-table",
-  "version": "0.0.2",
+  "name": "@internetarchive/ads-table",
+  "version": "0.0.0",
   "description": "This is a table web component.",
   "main": "./src/index.ts",
   "module": "./dist/index.js",
