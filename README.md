@@ -3,6 +3,8 @@
 This is a library of web components and various utilities in use by the frontend developers
 on the Archiving & Data Services (ADS) team at the Internet Archive.
 
+This project uses the MIT license.
+
 # Development
 
 ### Creating a new package or component
