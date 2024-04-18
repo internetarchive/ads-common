@@ -1,6 +1,6 @@
 {
-  "name": "@jeffklein/sample-package",
-  "version": "0.0.2",
+  "name": "@internetarchive/ads-modal",
+  "version": "0.0.0",
   "description": "This is a template for a new package in ads-common.",
   "main": "./src/index.ts",
   "module": "./dist/index.js",
@@ -20,12 +20,12 @@
   "author": "Internet Archive",
   "license": "AGPL-3.0",
   "dependencies": {
-    "@jeffklein/ads-button": "^0.0.7",
+    "@internetarchive/ads-button": "^0.0.4",
+    "@internetarchive/ads-library": "^0.0.4",
     "lit": "^3.1.2"
   },
   "peerDependencies": {},
   "devDependencies": {
-    "@jeffklein/ads-library": "^0.0.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.6",

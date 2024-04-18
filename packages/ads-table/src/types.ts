@@ -1,6 +1,6 @@
 // T is the type you will be comparing and formatting
 import { TemplateResult } from "lit";
-import { formatDate, humanBytes } from "@jeffklein/ads-library";
+import { formatDate, humanBytes } from "@internetarchive/ads-library";
 
 export type SortComparisonResult = -1 | 0 | 1;
 export type SortComparisonFunction<T> = (a: T, b: T) => SortComparisonResult;

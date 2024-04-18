@@ -7,8 +7,8 @@ import {
   TableRow,
 } from "./types";
 import { property, state, query, customElement } from "lit/decorators.js";
-import { EventHelpers } from "@jeffklein/ads-library";
-import { getUserOS, UserOperatingSystem } from "@jeffklein/ads-library";
+import { EventHelpers } from "@internetarchive/ads-library";
+import { getUserOS, UserOperatingSystem } from "@internetarchive/ads-library";
 
 export abstract class AdsTable<T> extends LitElement {
   @query("#main-table") tableElement: HTMLTableElement | undefined;

@@ -3,10 +3,10 @@
 
 import { html, css, LitElement, TemplateResult, PropertyValues } from "lit";
 import { property, customElement, state } from "lit/decorators.js";
-import { EventHelpers } from "@jeffklein/ads-library";
-import { AdsButtonTypes } from "@jeffklein/ads-button";
+import { EventHelpers } from "@internetarchive/ads-library";
+import { AdsButtonTypes } from "@internetarchive/ads-button";
 
-import "@jeffklein/ads-button";
+import "@internetarchive/ads-button";
 
 @customElement("ads-modal")
 export class AdsModal extends LitElement {
