@@ -1,6 +1,6 @@
 {
   "name": "@internetarchive/ads-library",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "This is a home for common library and helper functions in use by the Internet Archive's Archiving and Data Services team.",
   "main": "./dist/index.js",
   "scripts": {
