@@ -10,7 +10,7 @@ export default {
     sourcemap: true,
     format: "esm",
   },
-  plugins: [nodeResolve(), commonJs(), typescript(), minify()],
+  plugins: [typescript(), nodeResolve(), commonJs(), minify()],
   watch: {
     exclude: ["node_modules/**"],
   },
