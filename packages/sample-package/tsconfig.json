@@ -11,6 +11,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "outDir": "dist",
+    "declarationDir": "dist",
     "incremental": true,
     "sourceMap": true,
     "inlineSources": true,
