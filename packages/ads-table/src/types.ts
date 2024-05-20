@@ -65,48 +65,12 @@ export const NumberDataType: TableDataType<number> = {
 };
 
 // for comparing and formatting dates - Note, date formatting operation
-// is considerably slower than any other ones here, so we keep an
-// internal rolling cache of 1k values since date values in general
-// are not liable to change often, and tables should not have more
-// items than this.
-class DateFormatCache {
-  protected static MAX_CACHE_SIZE: number = 1_000;
-  protected static cache: { [unformattedDate: string]: string } = {};
-
-  // get a formatted date string from the cache
-  static get(date: Date): string | undefined {
-    return DateFormatCache.cache[date.toString()];
-  }
-
-  // note - date references always serialize to identical keys, probably
-  // using their internal millisecond values.
-  static getOrAdd(date: Date): string {
-    const cachedValue = DateFormatCache.get(date) || formatDate(date);
-    DateFormatCache.pruneCache();
-    DateFormatCache.cache[date.toString()] = cachedValue; // set idempotently
-    return cachedValue;
-  }
-
-  protected static pruneCache(): void {
-    const cacheKeys: string[] = Object.keys(DateFormatCache.cache);
-    if (cacheKeys.length >= DateFormatCache.MAX_CACHE_SIZE) {
-      const randomDeleteIndex = Math.floor(Math.random() * cacheKeys.length);
-      const deleteKey = cacheKeys[randomDeleteIndex];
-      console.log(
-        "deleting from cache",
-        cacheKeys.length,
-        deleteKey,
-        DateFormatCache.cache,
-      );
-      delete DateFormatCache.cache[deleteKey];
-    }
-  }
-}
+// is SLOW relative to some other operations.
 export const DateDataType: TableDataType<Date> = {
   compare: (a: Date, b: Date): SortComparisonResult => {
     return NumberDataType.compare?.(a.getTime(), b.getTime()) || 0;
   },
-  format: (date: Date) => DateFormatCache.getOrAdd(date),
+  format: (date: Date) => formatDate(date),
   defaultSortDirection: "descending",
 };
 
