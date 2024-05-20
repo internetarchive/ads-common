@@ -130,6 +130,11 @@ export abstract class AdsTable<T> extends LitElement {
       this.sortDirection =
         column.dataType.defaultSortDirection || defaultSortDirection;
     }
+    this.emitEvent("column-click", {
+      column,
+      sortKey: this.sortKey,
+      sortDirection: this.sortDirection,
+    });
   }
 
   // a map of column keys to their respective data types so we don't have to call .find everywhere
