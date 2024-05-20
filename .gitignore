@@ -6,3 +6,4 @@ dist
 node_modules
 .storybook
 tsconfig.tsbuildinfo
+*.iml
