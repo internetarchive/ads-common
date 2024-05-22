@@ -17,6 +17,9 @@ export interface TableColumn<T> {
   key: keyof T;
   label: string;
   dataType: TableDataType<T>;
+  // will ignore the datatype compare function and will
+  // display the rows as-is when this column is sorting
+  preSorted?: boolean;
   // default is 1
   flexRatio?: number;
   // shown by default

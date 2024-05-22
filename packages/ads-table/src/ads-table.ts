@@ -90,6 +90,10 @@ export abstract class AdsTable<T> extends LitElement {
   }
 
   protected get sortedRows(): TableRow<T>[] {
+    // if sorting has been done already, return the rows as-is.
+    if (this.selectedColumn.preSorted) {
+      return this.rows;
+    }
     const sortByPrimaryKey = this.getSortFunction(
       this.sortColumnDataType,
       this.sortDirection,
@@ -110,8 +114,14 @@ export abstract class AdsTable<T> extends LitElement {
     });
   }
 
+  // rows highlighted by user
   protected get selectedRows(): TableRow<T>[] {
     return this.selectedRowIds.map((id) => this.rowsById[id]).filter((x) => x);
+  }
+
+  // the column you are currently sorting by
+  protected get selectedColumn(): TableColumn<T> {
+    return this.columnByKey[this.sortKey as string];
   }
 
   // handler for when a user clicks on a column header
@@ -138,18 +148,18 @@ export abstract class AdsTable<T> extends LitElement {
   }
 
   // a map of column keys to their respective data types so we don't have to call .find everywhere
-  protected get columnKeyToDataType(): {
-    [columnKey: string]: TableDataType<T>;
+  protected get columnByKey(): {
+    [columnKey: string]: TableColumn<T>;
   } {
-    return Object.fromEntries<TableDataType<T>>(
-      this.columns.map((col) => [col.key, col.dataType]),
+    return Object.fromEntries<TableColumn<T>>(
+      this.columns.map((col) => [col.key, col]),
     );
   }
 
   // data type of the currently sorted column
   protected get sortColumnDataType(): TableDataType<T> | undefined {
     if (this.sortKey) {
-      return this.columnKeyToDataType[this.sortKey as string];
+      return this.columnByKey[this.sortKey as string].dataType;
     } else {
       return undefined;
     }
@@ -158,7 +168,7 @@ export abstract class AdsTable<T> extends LitElement {
   // data type of the secondary sort column
   protected get secondarySortDataType(): TableDataType<T> | undefined {
     if (this.secondarySortKey) {
-      return this.columnKeyToDataType[this.secondarySortKey as string];
+      return this.columnByKey[this.secondarySortKey as string].dataType;
     } else {
       return undefined;
     }
