@@ -21,10 +21,10 @@ export type ExtendedApiFetchOptions<RequestT, ExtraOptionsT> =
 export type ApiFetchOptions<RequestT> = ExtendedApiFetchOptions<
   RequestT,
   {
-    // Accept header
+    // Accept header - what content type does the client / caller expect in return?
     acceptType: string;
-    // Content-Type header
-    contentType: string;
+    // Content-Type header - can omit for GET / DELETE / non-payload requests.
+    contentType?: string;
   }
 >;
 
@@ -69,10 +69,17 @@ export function callApi<RequestT extends BodyInit | null | undefined>(
     headers: {
       ...getCsrfHeader(),
       Accept: options.acceptType,
-      "Content-Type": options.contentType,
     },
     body: options.body,
   };
+  // to add optional Content-Type, we must reinitialize headers after type refinement
+  // since HeadersInit doesn't accept optional/mutable types.
+  if (options.contentType && request.headers) {
+    request.headers = {
+      ...request.headers,
+      "Content-Type": options.contentType,
+    };
+  }
   return (
     fetch(options.url, request)
       .then((response) => {
