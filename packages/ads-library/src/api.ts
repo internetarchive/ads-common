@@ -83,16 +83,16 @@ export function callApi<RequestT extends BodyInit | null | undefined>(
   return (
     fetch(options.url, request)
       .then((response) => {
-        if (response.ok) {
-          return response;
-        } else {
-          throw new Error(options.errorMessage);
+        if (!response.ok) {
+          // log user error message for non-200 level responses
+          console.error(options.errorMessage);
         }
+        return response;
       })
-      // log error, return no response
+      // log error message, bubble up exception
       .catch((error) => {
-        console.error(error);
-        return Promise.reject(options.errorMessage);
+        console.error(options.errorMessage);
+        return Promise.reject(error);
       })
   );
 }
