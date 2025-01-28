@@ -1,8 +1,9 @@
 {
   "name": "@internetarchive/ads-library",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "This is a home for common library and helper functions in use by the Internet Archive's Archiving and Data Services team.",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "test",
     "build": "yarn && yarn fix && rollup --bundleConfigAsCjs -c rollup.config.cjs",
