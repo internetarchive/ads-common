@@ -90,6 +90,8 @@ export class AdsButton extends LitElement {
       cursor: pointer;
       padding: 4px 12px;
       border-radius: 2px;
+      display: flex;
+      align-items: center;
     }
 
     button:not(.disabled) {
