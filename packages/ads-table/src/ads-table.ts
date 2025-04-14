@@ -1,5 +1,12 @@
 // interface class for a Lit component class that contains table data
-import { css, html, LitElement, PropertyValues, TemplateResult } from "lit";
+import {
+  css,
+  CSSResultGroup,
+  html,
+  LitElement,
+  PropertyValues,
+  TemplateResult,
+} from "lit";
 import {
   SortComparisonFunction,
   TableColumn,
@@ -393,7 +400,7 @@ export abstract class AdsTable<T> extends LitElement {
     `;
   }
 
-  static styles = css`
+  static styles: CSSResultGroup = css`
     table {
       display: flex;
       flex-direction: column;
