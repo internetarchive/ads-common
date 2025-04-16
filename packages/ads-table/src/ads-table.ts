@@ -430,7 +430,7 @@ export abstract class AdsTable<T> extends LitElement {
     }
 
     tr.row-selected {
-      background: #ccddf2;
+      background: #ddebff;
     }
 
     td.no-data {
