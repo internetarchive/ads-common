@@ -27,5 +27,6 @@
     "tslib": "^2.6.2",
     "typescript": "5.3.3"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "packageManager": "yarn@1.22.22"
 }
