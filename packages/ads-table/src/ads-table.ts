@@ -23,6 +23,8 @@ export abstract class AdsTable<T> extends LitElement {
   // base list of data that this class sorts
   @property({ type: Array }) rows: TableRow<T>[] = [];
 
+  @property({ type: Boolean }) disableKeyboardNavigation: boolean = false;
+
   // abstract members to override
   protected abstract columns: TableColumn<T>[];
   protected abstract sortKey: keyof T | undefined;
@@ -305,6 +307,9 @@ export abstract class AdsTable<T> extends LitElement {
 
   // All keyboard events implemented through this method.
   protected onKeyDown(event: KeyboardEvent): void {
+    if (this.disableKeyboardNavigation) {
+      return;
+    }
     switch (event.key) {
       case "ArrowUp":
       case "ArrowDown":
