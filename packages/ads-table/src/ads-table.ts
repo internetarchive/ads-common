@@ -13,12 +13,18 @@ import {
   TableDataType,
   TableRow,
 } from "./types";
-import { property, state, query, customElement } from "lit/decorators.js";
+import { property, state, query, queryAll, customElement } from "lit/decorators.js";
 import { EventHelpers } from "@internetarchive/ads-library";
 import { getUserOS, UserOperatingSystem } from "@internetarchive/ads-library";
 
 export abstract class AdsTable<T> extends LitElement {
   @query("#main-table") tableElement: HTMLTableElement | undefined;
+
+  @queryAll("table tr") tableRows: HTMLTableRowElement[] | undefined;
+
+  protected getTableRowElementById(id: string): HTMLTableRowElement | undefined {
+    return this.tableRows?.find((row) => row.id === `row-${id}`);
+  }
 
   // base list of data that this class sorts
   @property({ type: Array }) rows: TableRow<T>[] = [];
@@ -268,7 +274,7 @@ export abstract class AdsTable<T> extends LitElement {
   }
 
   protected onRowClick(
-    event: MouseEvent,
+    event: MouseEvent | KeyboardEvent,
     clickedRow: TableRow<T>,
     rowIndex: number,
   ): void {
@@ -305,7 +311,7 @@ export abstract class AdsTable<T> extends LitElement {
     this.emitEvent("row-double-click", { row: clickedRow });
   }
 
-  // All keyboard events implemented through this method.
+  // default keyboard events implemented through this method.
   protected onKeyDown(event: KeyboardEvent): void {
     if (this.disableKeyboardNavigation) {
       return;
@@ -318,6 +324,33 @@ export abstract class AdsTable<T> extends LitElement {
         this.tableElement?.focus();
         return this.onUpDownArrowKey(event.key);
     }
+  }
+
+  protected onColumnKeyDown(event: KeyboardEvent, column: TableColumn<T>): void {
+    if (this.disableKeyboardNavigation) {
+      return;
+    }
+    switch (event.key) {
+      case "Enter":
+        return this.onColumnClick(column)
+    }
+  }
+
+  protected onRowKeyDown(event: KeyboardEvent, row: TableRow<T>, index: number): void {
+    if (this.disableKeyboardNavigation) {
+      return;
+    }
+    switch (event.key) {
+      // enter to select, enter again to navigate within, shift + enter to deselect
+      case "Enter":
+        if (this.isSelected(row) && !event.shiftKey) {
+          return this.onRowClick(event, row, index);
+        } else {
+          event.stopImmediatePropagation();
+          return this.toggleRowSelected(row.id);
+        }
+    }
+
   }
 
   protected onUpDownArrowKey(key: "ArrowUp" | "ArrowDown"): void {
@@ -342,21 +375,23 @@ export abstract class AdsTable<T> extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // attach keyboard listener
+    // attach keyboard listener for arrow keys
     window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e));
   }
 
   render() {
     return html`
-      <table id="main-table" tabindex="0">
+      <table id="main-table">
         <thead>
           <tr>
             ${this.visibleColumns.map(
               (column) => html`
                 <th
                   @click=${() => this.onColumnClick(column)}
+                  @keydown=${(e: KeyboardEvent) => this.onColumnKeyDown(e, column)}
                   class=${column.dataType.compare ? "sortable" : ""}
                   style=${`flex: ${column.flexRatio}`}
+                  tabindex="0"
                 >
                   ${column.label}
                   ${column.dataType.compare
@@ -374,9 +409,11 @@ export abstract class AdsTable<T> extends LitElement {
                   <tr
                     @click=${(e: MouseEvent) => this.onRowClick(e, row, index)}
                     @dblclick=${() => this.onRowDoubleClick(row)}
+                    @keydown=${(e: KeyboardEvent) => this.onRowKeyDown(e, row, index)}
                     class=${this.isSelected(row) ? "row-selected" : ""}
                     data-row-selected=${this.isSelected(row)}
                     data-id=${row.id}
+                    tabindex="0"
                   >
                     ${this.visibleColumns.map(
                       (column) => html`
