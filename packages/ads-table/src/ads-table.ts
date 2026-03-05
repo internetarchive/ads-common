@@ -13,12 +13,13 @@ import {
   TableDataType,
   TableRow,
 } from "./types";
-import { property, state, query, customElement } from "lit/decorators.js";
+import { property, state, query, queryAll, customElement } from "lit/decorators.js";
 import { EventHelpers } from "@internetarchive/ads-library";
 import { getUserOS, UserOperatingSystem } from "@internetarchive/ads-library";
 
 export abstract class AdsTable<T> extends LitElement {
   @query("#main-table") tableElement: HTMLTableElement | undefined;
+  @queryAll("tbody tr") rowElements!: HTMLTableRowElement[] | undefined;
 
   // base list of data that this class sorts
   @property({ type: Array }) rows: TableRow<T>[] = [];
@@ -40,6 +41,8 @@ export abstract class AdsTable<T> extends LitElement {
 
   // list of selected rows in order of least to most recently added
   @state() protected selectedRowIds: string[] = [];
+
+  @state() protected indexOfLastFocusedRow: number | undefined = undefined;
 
   @state() isLoading: boolean = false;
 
@@ -243,7 +246,7 @@ export abstract class AdsTable<T> extends LitElement {
   }
 
   // select rows in order from the last selected element up til the given index
-  protected groupRowSelect(rowIndex: number): void {
+  protected multiRowSelect(rowIndex: number): void {
     const getRowsToAdd = (): TableRow<T>[] => {
       // get rows between index of last selected until index of selected row
       if (rowIndex > this.indexOfLastSelectedRow) {
@@ -267,23 +270,28 @@ export abstract class AdsTable<T> extends LitElement {
     this.selectedRowIds = [...this.selectedRowIds, ...rowIdsToAdd];
   }
 
-  protected onRowClick(
-    event: MouseEvent,
-    clickedRow: TableRow<T>,
-    rowIndex: number,
-  ): void {
+  // mac/windows-agnostic way of saying whether someone's holding a key down or not
+  protected static userHoldingMetaKey(event: MouseEvent | KeyboardEvent): boolean {
     const userOs = getUserOS();
     // meta (cmd) key for mac, control key for non-mac
     const macHoldingHotKey =
       userOs === UserOperatingSystem.MAC && event.metaKey;
     const nonMacHoldingHotKey =
       userOs !== UserOperatingSystem.MAC && event.ctrlKey;
+    return macHoldingHotKey || nonMacHoldingHotKey
+  }
+
+  protected onRowClick(
+    event: MouseEvent,
+    clickedRow: TableRow<T>,
+    rowIndex: number,
+  ): void {
     // if holding meta on mac or ctrl on windows/linux, toggle individual row selection
-    if (macHoldingHotKey || nonMacHoldingHotKey) {
+    if (AdsTable.userHoldingMetaKey(event)) {
       this.toggleRowSelected(clickedRow.id);
     } else if (event.shiftKey) {
       // if holding shift, select rows between this selection and the last selection
-      this.groupRowSelect(rowIndex);
+      this.multiRowSelect(rowIndex);
     } else {
       // clicking a row will select just that row.
       this.selectedRowIds = [clickedRow.id];
@@ -311,33 +319,87 @@ export abstract class AdsTable<T> extends LitElement {
       return;
     }
     switch (event.key) {
+      case "Escape":
+        this.blur();
+        console.log(this, "blurring")
+        return;
       case "ArrowUp":
+        return this.goUpOneRow(event);
       case "ArrowDown":
-        event.preventDefault();
-        // shift focus to table element when navigating with arrow keys
-        this.tableElement?.focus();
-        return this.onUpDownArrowKey(event.key);
+        return this.goDownOneRow(event);
+      case "Tab":
+        // emulate arrow key behavior with tab.
+        // to prevent focus from getting stuck on the table once user has tabbed in:
+        if (this.selectedRowIds.length > 0) {
+          return event.shiftKey ? this.goUpOneRow(event) : this.goDownOneRow(event);
+        }
     }
   }
 
-  protected onUpDownArrowKey(key: "ArrowUp" | "ArrowDown"): void {
-    if (this.selectedRowIds.length === 0) {
-      // select the first row if none are selected
-      this.selectedRowIds = [this.rows[0].id];
+  protected goUpOneRow(event: KeyboardEvent): void {
+    return this.onRowUpOrDown(event, -1);
+  }
+
+  protected goDownOneRow(event: KeyboardEvent): void {
+    return this.onRowUpOrDown(event, 1);
+  }
+
+  // moves the selection and focus up or down by indexOffset rows when keyboard moves
+  protected onRowUpOrDown(event: KeyboardEvent, indexOffset: number): void {
+    if (this.rows.length === 0) {
       return;
     }
-    // offset in the proper direction of the arrow
-    const indexOffset = key === "ArrowUp" ? -1 : 1;
-    const newSelectedRowIndex = this.constrainIndex(
-      this.indexOfLastSelectedRow + indexOffset,
-    );
-    const newSelectedRowId = this.rows[newSelectedRowIndex].id;
-    this.selectedRowIds = [newSelectedRowId];
+    // if the keypress would take you to a nonexistent row index, do nothing, otherwise
+    // suppress default behavior as this is a valid keypress
+    const newFocusedRowIndex = (this.indexOfLastFocusedRow || 0) + indexOffset;
+    const newSelectedRowIndex = (this.indexOfLastSelectedRow || 0) + indexOffset;
+    const newSelectIndexIsOutOfBounds = newSelectedRowIndex >= this.rows.length || newSelectedRowIndex < 0;
+    if (newSelectIndexIsOutOfBounds && event.key === "Tab") {
+      return;
+    } else if (event.shiftKey && AdsTable.userHoldingMetaKey(event) && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+      return this.focusRowById(this.rows[this.constrainIndex(newFocusedRowIndex)].id);
+    } else if (event.shiftKey && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+      // direction key + shift = multiselect w/ keyboard
+      this.focusRowById(this.rows[this.constrainIndex(newFocusedRowIndex)].id);
+      return this.multiRowSelect(newSelectedRowIndex);
+    } else {
+      // otherwise, smother event behavior and proceed manually
+      event.preventDefault();
+    }
+    // returns the id of the row that should be selected on this directional key press
+    const rowIdToSelectOnArrowPress = (): string => {
+      if (this.selectedRowIds.length === 0) {
+        // select the first row if none are selected
+        return this.rows[0].id;
+      } else {
+        // select the row or the last in-bounds entry in that direction
+        return this.rows[this.constrainIndex(newSelectedRowIndex)].id;
+      }
+    }
+    // select and focus a single id
+    const newSelectedRowId = rowIdToSelectOnArrowPress();
+    this.focusRowById(newSelectedRowId);
+    if (this.selectedRowIds.length <= 1) {
+      this.selectedRowIds = [newSelectedRowId];
+    }
+  }
+
+  // focuses the last selected row, if it exists
+  protected focusRowById(rowId: string): void {
+    const rowElementsArray: HTMLTableRowElement[] = this.rowElements ? Array.from(this.rowElements) : [];
+    const rowById: HTMLTableRowElement | undefined = rowElementsArray.find((rowElement) =>
+      rowElement.id === `row-${rowId}`
+    )
+    rowById?.focus();
   }
 
   // ensures index values are kept to the closest in-bounds index
   protected constrainIndex(index: number): number {
     return Math.max(Math.min(index, this.rows.length - 1), 0);
+  }
+
+  protected onFocusRow(index: number): void {
+    this.indexOfLastFocusedRow = index;
   }
 
   connectedCallback() {
@@ -350,13 +412,15 @@ export abstract class AdsTable<T> extends LitElement {
     return html`
       <table id="main-table" tabindex="0">
         <thead>
-          <tr>
+          <tr id="row-header">
             ${this.visibleColumns.map(
               (column) => html`
                 <th
+                  role="button"
                   @click=${() => this.onColumnClick(column)}
                   class=${column.dataType.compare ? "sortable" : ""}
                   style=${`flex: ${column.flexRatio}`}
+                  tabindex="0"
                 >
                   ${column.label}
                   ${column.dataType.compare
@@ -372,11 +436,14 @@ export abstract class AdsTable<T> extends LitElement {
             ? this.sortedRows.map(
                 (row, index) => html`
                   <tr
+                    @focus=${() => this.onFocusRow(index)}
                     @click=${(e: MouseEvent) => this.onRowClick(e, row, index)}
                     @dblclick=${() => this.onRowDoubleClick(row)}
                     class=${this.isSelected(row) ? "row-selected" : ""}
                     data-row-selected=${this.isSelected(row)}
                     data-id=${row.id}
+                    id=${"row-" + row.id}
+                    tabindex="0"
                   >
                     ${this.visibleColumns.map(
                       (column) => html`
