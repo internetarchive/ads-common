@@ -13,7 +13,13 @@ import {
   TableDataType,
   TableRow,
 } from "./types";
-import { property, state, query, queryAll, customElement } from "lit/decorators.js";
+import {
+  property,
+  state,
+  query,
+  queryAll,
+  customElement,
+} from "lit/decorators.js";
 import { EventHelpers } from "@internetarchive/ads-library";
 import { getUserOS, UserOperatingSystem } from "@internetarchive/ads-library";
 
@@ -22,8 +28,12 @@ export abstract class AdsTable<T> extends LitElement {
 
   @queryAll("table tr") tableRows: HTMLTableRowElement[] | undefined;
 
-  protected getTableRowElementById(id: string): HTMLTableRowElement | undefined {
-    return this.tableRows?.find((row) => row.id === `row-${id}`);
+  protected getTableRowElementById(
+    id: string,
+  ): HTMLTableRowElement | undefined {
+    return Array.from(this.tableRows || []).find(
+      (row) => row.id === `row-${id}`,
+    );
   }
 
   // base list of data that this class sorts
@@ -311,7 +321,9 @@ export abstract class AdsTable<T> extends LitElement {
     this.emitEvent("row-double-click", { row: clickedRow });
   }
 
-  // default keyboard events implemented through this method.
+  // default global keyboard events implemented through this method.
+  // event.stopImmediatePropagation() in DOM keyboard event listeners will
+  // prevent this method from being called.
   protected onKeyDown(event: KeyboardEvent): void {
     if (this.disableKeyboardNavigation) {
       return;
@@ -320,52 +332,75 @@ export abstract class AdsTable<T> extends LitElement {
       case "ArrowUp":
       case "ArrowDown":
         event.preventDefault();
-        // shift focus to table element when navigating with arrow keys
-        this.tableElement?.focus();
-        return this.onUpDownArrowKey(event.key);
+        return this.onUpDownArrowKey(event);
     }
   }
 
-  protected onColumnKeyDown(event: KeyboardEvent, column: TableColumn<T>): void {
+  // listener applies when column has focus
+  protected onColumnKeyDown(
+    event: KeyboardEvent,
+    column: TableColumn<T>,
+  ): void {
     if (this.disableKeyboardNavigation) {
       return;
     }
     switch (event.key) {
       case "Enter":
-        return this.onColumnClick(column)
+        return this.onColumnClick(column);
     }
   }
 
-  protected onRowKeyDown(event: KeyboardEvent, row: TableRow<T>, index: number): void {
+  // listener applies when row has focus
+  protected onRowKeyDown(
+    event: KeyboardEvent,
+    row: TableRow<T>,
+    index: number,
+  ): void {
     if (this.disableKeyboardNavigation) {
       return;
     }
     switch (event.key) {
-      // enter to select, enter again to navigate within, shift + enter to deselect
+      // enter to select, enter again to navigate within, shift + enter to deselect (and select), while in multiselect
       case "Enter":
-        if (this.isSelected(row) && !event.shiftKey) {
+        if (
+          this.isSelected(row) &&
+          !event.shiftKey &&
+          this.selectedRows.length === 1
+        ) {
           return this.onRowClick(event, row, index);
         } else {
           event.stopImmediatePropagation();
           return this.toggleRowSelected(row.id);
         }
     }
-
   }
 
-  protected onUpDownArrowKey(key: "ArrowUp" | "ArrowDown"): void {
-    if (this.selectedRowIds.length === 0) {
-      // select the first row if none are selected
-      this.selectedRowIds = [this.rows[0].id];
+  protected onUpDownArrowKey(event: KeyboardEvent): void {
+    if (this.rows.length === 0) {
+      // there are no rows to navigate or select with arrows. avoids array out of bounds.
       return;
     }
-    // offset in the proper direction of the arrow
-    const indexOffset = key === "ArrowUp" ? -1 : 1;
+    const indexOffset = event.key === "ArrowUp" ? -1 : 1;
     const newSelectedRowIndex = this.constrainIndex(
       this.indexOfLastSelectedRow + indexOffset,
     );
     const newSelectedRowId = this.rows[newSelectedRowIndex].id;
-    this.selectedRowIds = [newSelectedRowId];
+
+    if (event.shiftKey) {
+      // - focus and (maybe) select and focus the prev or next, if it exists
+      this.groupRowSelect(newSelectedRowIndex);
+    } else if (this.selectedRowIds.length === 0) {
+      // select the first row if none are selected
+      const firstRowId = this.rows[0] ? this.rows[0].id : undefined;
+      if (firstRowId) {
+        this.selectedRowIds = [firstRowId];
+      }
+    } else {
+      // offset in the proper direction of the arrow
+      this.selectedRowIds = [newSelectedRowId];
+    }
+    // always try to focus the next element in the direction of the arrow if you can
+    this.getTableRowElementById(newSelectedRowId)?.focus();
   }
 
   // ensures index values are kept to the closest in-bounds index
@@ -388,7 +423,8 @@ export abstract class AdsTable<T> extends LitElement {
               (column) => html`
                 <th
                   @click=${() => this.onColumnClick(column)}
-                  @keydown=${(e: KeyboardEvent) => this.onColumnKeyDown(e, column)}
+                  @keydown=${(e: KeyboardEvent) =>
+                    this.onColumnKeyDown(e, column)}
                   class=${column.dataType.compare ? "sortable" : ""}
                   style=${`flex: ${column.flexRatio}`}
                   tabindex="0"
@@ -409,10 +445,12 @@ export abstract class AdsTable<T> extends LitElement {
                   <tr
                     @click=${(e: MouseEvent) => this.onRowClick(e, row, index)}
                     @dblclick=${() => this.onRowDoubleClick(row)}
-                    @keydown=${(e: KeyboardEvent) => this.onRowKeyDown(e, row, index)}
+                    @keydown=${(e: KeyboardEvent) =>
+                      this.onRowKeyDown(e, row, index)}
                     class=${this.isSelected(row) ? "row-selected" : ""}
                     data-row-selected=${this.isSelected(row)}
                     data-id=${row.id}
+                    id=${"row-" + row.id}
                     tabindex="0"
                   >
                     ${this.visibleColumns.map(
