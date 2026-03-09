@@ -1,6 +1,6 @@
 {
   "name": "@internetarchive/ads-button",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This is a button web component.",
   "main": "./src/index.ts",
   "module": "./dist/index.js",
