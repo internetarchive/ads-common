@@ -16,6 +16,7 @@ export class AdsButton extends LitElement {
   // will remove borders
   @property() flat?: boolean = false;
   @property() heightPx?: number = undefined;
+  @property({ type: String }) ariaLabel = "";
 
   // maps the button type to its relevant class
   private get buttonClass() {
@@ -56,6 +57,7 @@ export class AdsButton extends LitElement {
         style=${this.heightPx ? `height: ${this.heightPx}px` : ""}
         @click=${this.onClick}
         aria-disabled=${this.disabled}
+        aria-label=${this.ariaLabel}
       >
         <slot></slot>
       </button>
