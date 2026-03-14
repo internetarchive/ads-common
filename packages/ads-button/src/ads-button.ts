@@ -86,6 +86,7 @@ export class AdsButton extends LitElement {
         --ads-button-text-color,
         var(--ads-primary-theme-text, white)
       );
+      --ads-button-outline-color--: var(--ads-button-outline-color, black);
     }
 
     button {
@@ -98,6 +99,10 @@ export class AdsButton extends LitElement {
 
     button:not(.disabled) {
       transition: filter 0.3s ease-out;
+    }
+
+    button:focus-visible {
+      outline-color: var(--ads-button-outline-color--);
     }
 
     /* PRIMARY styles */
