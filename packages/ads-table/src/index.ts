@@ -7,6 +7,7 @@ export {
   DateDataType,
   BytesDataType,
   NumberDataType,
+  BooleanDataType,
   SortComparisonFunction,
   SortComparisonResult,
   NonSortable,
