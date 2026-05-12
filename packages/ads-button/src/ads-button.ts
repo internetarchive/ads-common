@@ -71,6 +71,8 @@ export class AdsButton extends LitElement {
       // --ads-button-background-color
       // --ads-button-text-color
       // --ads-button-border-color
+      // --ads-button-outline-color
+      // --ads-button-secondary-outline-color
       */
 
       /* create local copies falling back on default colors */
@@ -86,7 +88,11 @@ export class AdsButton extends LitElement {
         --ads-button-text-color,
         var(--ads-primary-theme-text, white)
       );
-      --ads-button-outline-color--: var(--ads-button-outline-color, black);
+      --ads-button-outline--: var(--ads-button-outline, 1px solid black);
+      --ads-button-secondary-outline--: var(
+        --ads-button-secondary-outline,
+        1px solid black
+      );
     }
 
     button {
@@ -102,7 +108,7 @@ export class AdsButton extends LitElement {
     }
 
     button:focus-visible {
-      outline-color: var(--ads-button-outline-color--);
+      outline: var(--ads-button-outline--);
     }
 
     /* PRIMARY styles */
@@ -123,6 +129,10 @@ export class AdsButton extends LitElement {
       background: white;
       color: var(--ads-button-border-color--);
       border: 1px solid var(--ads-button-border-color--);
+    }
+
+    button.secondary:focus-visible {
+      outline: var(--ads-button-secondary-outline--);
     }
 
     /* CANCEL styles */
