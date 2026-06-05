@@ -13,13 +13,7 @@ import {
   TableDataType,
   TableRow,
 } from "./types";
-import {
-  property,
-  state,
-  query,
-  queryAll,
-  customElement,
-} from "lit/decorators.js";
+import { property, state, query, customElement } from "lit/decorators.js";
 import { EventHelpers } from "@internetarchive/ads-library";
 import { getUserOS, UserOperatingSystem } from "@internetarchive/ads-library";
 
@@ -327,9 +321,7 @@ export abstract class AdsTable<T> extends LitElement {
   }
 
   // listener applies only after table has focus
-  protected onTableKeyDown(
-    event: KeyboardEvent,
-  ): void {
+  protected onTableKeyDown(event: KeyboardEvent): void {
     if (this.disableKeyboardNavigation) {
       return;
     }
@@ -429,8 +421,7 @@ export abstract class AdsTable<T> extends LitElement {
         tabindex="0"
         role="treegrid"
         id="main-table"
-        @keydown=${(e: KeyboardEvent) =>
-          this.onTableKeyDown(e)}
+        @keydown=${(e: KeyboardEvent) => this.onTableKeyDown(e)}
       >
         <thead>
           <tr role="row">
@@ -438,6 +429,7 @@ export abstract class AdsTable<T> extends LitElement {
               (column) => html`
                 <th
                   role="gridcell"
+                  aria-label=${column.label}
                   @click=${() => this.onColumnClick(column)}
                   @keydown=${(e: KeyboardEvent) =>
                     this.onColumnKeyDown(e, column)}
@@ -464,13 +456,17 @@ export abstract class AdsTable<T> extends LitElement {
                     @keydown=${(e: KeyboardEvent) =>
                       this.onRowKeyDown(e, row, index)}
                     class=${this.isSelected(row) ? "row-selected" : ""}
+                    aria-selected=${this.isSelected(row)}
                     data-row-selected=${this.isSelected(row)}
                     data-id=${row.id}
                     id=${"row-" + row.id}
                   >
                     ${this.visibleColumns.map(
                       (column) => html`
-                        <td role="gridcell" style=${`flex: ${column.flexRatio}`}>
+                        <td
+                          role="gridcell"
+                          style=${`flex: ${column.flexRatio}`}
+                        >
                           ${column.dataType.format(row.data)}
                         </td>
                       `,
