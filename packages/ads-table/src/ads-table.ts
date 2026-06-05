@@ -416,12 +416,13 @@ export abstract class AdsTable<T> extends LitElement {
 
   render() {
     return html`
-      <table id="main-table">
+      <table role="treegrid" id="main-table">
         <thead>
-          <tr>
+          <tr role="row">
             ${this.visibleColumns.map(
               (column) => html`
                 <th
+                  role="gridcell"
                   @click=${() => this.onColumnClick(column)}
                   @keydown=${(e: KeyboardEvent) =>
                     this.onColumnKeyDown(e, column)}
@@ -443,6 +444,7 @@ export abstract class AdsTable<T> extends LitElement {
             ? this.sortedRows.map(
                 (row, index) => html`
                   <tr
+                    role="row"
                     @click=${(e: MouseEvent) => this.onRowClick(e, row, index)}
                     @dblclick=${() => this.onRowDoubleClick(row)}
                     @keydown=${(e: KeyboardEvent) =>
@@ -455,7 +457,7 @@ export abstract class AdsTable<T> extends LitElement {
                   >
                     ${this.visibleColumns.map(
                       (column) => html`
-                        <td style=${`flex: ${column.flexRatio}`}>
+                        <td role="gridcell" style=${`flex: ${column.flexRatio}`}>
                           ${column.dataType.format(row.data)}
                         </td>
                       `,
@@ -464,14 +466,14 @@ export abstract class AdsTable<T> extends LitElement {
                 `,
               )
             : html`
-                <tr>
-                  <td class="no-data">Loading...</td>
+                <tr role="row">
+                  <td role="gridcell" class="no-data">Loading...</td>
                 </tr>
               `}
           ${!this.isLoading && this.sortedRows.length === 0
             ? html`
-                <tr>
-                  <td class="no-data">${this.noDataText}</td>
+                <tr role="row">
+                  <td role="gridcell" class="no-data">${this.noDataText}</td>
                 </tr>
               `
             : null}
