@@ -26,16 +26,6 @@ import { getUserOS, UserOperatingSystem } from "@internetarchive/ads-library";
 export abstract class AdsTable<T> extends LitElement {
   @query("#main-table") tableElement: HTMLTableElement | undefined;
 
-  @queryAll("table tr") tableRows: HTMLTableRowElement[] | undefined;
-
-  protected getTableRowElementById(
-    id: string,
-  ): HTMLTableRowElement | undefined {
-    return Array.from(this.tableRows || []).find(
-      (row) => row.id === `row-${id}`,
-    );
-  }
-
   // base list of data that this class sorts
   @property({ type: Array }) rows: TableRow<T>[] = [];
 
@@ -336,7 +326,24 @@ export abstract class AdsTable<T> extends LitElement {
     }
   }
 
-  // listener applies when column has focus
+  // listener applies only after table has focus
+  protected onTableKeyDown(
+    event: KeyboardEvent,
+  ): void {
+    if (this.disableKeyboardNavigation) {
+      return;
+    }
+    // on esc or delete, emit an event
+    switch (event.key) {
+      case "Escape":
+        return this.emitEvent("table-navigate-back");
+      case "Backspace":
+        return this.emitEvent("table-navigate-back");
+    }
+  }
+
+  // listener applies when column has focus - does nothing since
+  // column header cannot get focus right now.
   protected onColumnKeyDown(
     event: KeyboardEvent,
     column: TableColumn<T>,
@@ -375,22 +382,26 @@ export abstract class AdsTable<T> extends LitElement {
     }
   }
 
+  protected focusTableElement(): void {
+    this.tableElement?.focus();
+  }
+
   protected onUpDownArrowKey(event: KeyboardEvent): void {
     if (this.rows.length === 0) {
       // there are no rows to navigate or select with arrows. avoids array out of bounds.
       return;
     }
+    // focus the main table element with each arrow key press
+    this.focusTableElement();
+
     const indexOffset = event.key === "ArrowUp" ? -1 : 1;
     const newSelectedRowIndex = this.constrainIndex(
       this.indexOfLastSelectedRow + indexOffset,
     );
     const newSelectedRowId = this.rows[newSelectedRowIndex].id;
 
-    if (event.shiftKey) {
-      // - focus and (maybe) select and focus the prev or next, if it exists
-      this.groupRowSelect(newSelectedRowIndex);
-    } else if (this.selectedRowIds.length === 0) {
-      // select the first row if none are selected
+    if (this.selectedRowIds.length === 0) {
+      // if none are selected, select the first row
       const firstRowId = this.rows[0] ? this.rows[0].id : undefined;
       if (firstRowId) {
         this.selectedRowIds = [firstRowId];
@@ -399,8 +410,6 @@ export abstract class AdsTable<T> extends LitElement {
       // offset in the proper direction of the arrow
       this.selectedRowIds = [newSelectedRowId];
     }
-    // always try to focus the next element in the direction of the arrow if you can
-    this.getTableRowElementById(newSelectedRowId)?.focus();
   }
 
   // ensures index values are kept to the closest in-bounds index
@@ -416,7 +425,13 @@ export abstract class AdsTable<T> extends LitElement {
 
   render() {
     return html`
-      <table role="treegrid" id="main-table">
+      <table
+        tabindex="0"
+        role="treegrid"
+        id="main-table"
+        @keydown=${(e: KeyboardEvent) =>
+          this.onTableKeyDown(e)}
+      >
         <thead>
           <tr role="row">
             ${this.visibleColumns.map(
@@ -428,7 +443,6 @@ export abstract class AdsTable<T> extends LitElement {
                     this.onColumnKeyDown(e, column)}
                   class=${column.dataType.compare ? "sortable" : ""}
                   style=${`flex: ${column.flexRatio}`}
-                  tabindex="0"
                 >
                   ${column.label}
                   ${column.dataType.compare
@@ -453,7 +467,6 @@ export abstract class AdsTable<T> extends LitElement {
                     data-row-selected=${this.isSelected(row)}
                     data-id=${row.id}
                     id=${"row-" + row.id}
-                    tabindex="0"
                   >
                     ${this.visibleColumns.map(
                       (column) => html`
