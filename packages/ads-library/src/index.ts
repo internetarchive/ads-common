@@ -11,4 +11,4 @@ export {
   ExtendedApiFetchOptions,
 } from "./api";
 export { UserOperatingSystem, getUserOS } from "./browser";
-export { humanBytes, formatDate } from "./formats";
+export { humanBytes, humanBytesBase2, formatDate } from "./formats";
