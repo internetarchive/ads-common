@@ -20,7 +20,7 @@
   "author": "Internet Archive",
   "license": "AGPL-3.0",
   "dependencies": {
-    "@internetarchive/ads-library": "^1.0.0",
+    "@internetarchive/ads-library": "^2.0.0",
     "lit": "^3.3.0"
   },
   "devDependencies": {
