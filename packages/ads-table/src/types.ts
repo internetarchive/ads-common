@@ -88,21 +88,24 @@ export const UndefinedHelpers = <T>(
   dataType: TableDataType<T>,
 ): TableDataType<T | undefined> => {
   // if a compare function exists, extend it to handle potentially undefined inputs
+  const isDefined = (value: T | undefined) =>
+    value !== undefined && value !== null;
   return {
     compare: dataType.compare
       ? (a: T | undefined, b: T | undefined) => {
-          if (a && b) {
+          if (isDefined(a) && isDefined(b)) {
             return dataType.compare?.(a, b) || 0;
-          } else if (a === b) {
-            // both are undefined
+          } else if (!isDefined(a) && !isDefined(b)) {
+            // both are undefined and we cannot sort on this
             return 0;
           }
           // if a is defined, it's first, if not, b is defined and first
-          return a ? 1 : -1;
+          return isDefined(a) ? 1 : -1;
         }
       : undefined,
     format(value: T | undefined): string | TemplateResult {
-      return value ? dataType.format(value) : "–";
+      // allow-list of false-y values: ensures 0 is respected as truth-y for numerical cases
+      return isDefined(value) ? dataType.format(value) : "–";
     },
   };
 };
