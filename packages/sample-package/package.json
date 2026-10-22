@@ -1,6 +1,6 @@
 {
-  "name": "@jeffklein/sample-package",
-  "version": "0.0.2",
+  "name": "@internetarchive/sample-package",
+  "version": "0.0.0",
   "description": "This is a template for a new package in ads-common.",
   "main": "./src/index.ts",
   "module": "./dist/index.js",
