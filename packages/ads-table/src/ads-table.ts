@@ -437,55 +437,61 @@ export abstract class AdsTable<T> extends LitElement {
                   style=${`flex: ${column.flexRatio}`}
                 >
                   ${column.label}
-                  ${column.dataType.compare
-                    ? html`<span>${this.renderArrowIcon(column.key)}</span>`
-                    : ""}
+                  ${
+                    column.dataType.compare
+                      ? html`<span>${this.renderArrowIcon(column.key)}</span>`
+                      : ""
+                  }
                 </th>
               `,
             )}
           </tr>
         </thead>
         <tbody>
-          ${!this.isLoading
-            ? this.sortedRows.map(
-                (row, index) => html`
-                  <tr
-                    role="row"
-                    @click=${(e: MouseEvent) => this.onRowClick(e, row, index)}
-                    @dblclick=${() => this.onRowDoubleClick(row)}
-                    @keydown=${(e: KeyboardEvent) =>
-                      this.onRowKeyDown(e, row, index)}
-                    class=${this.isSelected(row) ? "row-selected" : ""}
-                    aria-selected=${this.isSelected(row)}
-                    data-row-selected=${this.isSelected(row)}
-                    data-id=${row.id}
-                    id=${"row-" + row.id}
-                  >
-                    ${this.visibleColumns.map(
-                      (column) => html`
-                        <td
-                          role="gridcell"
-                          style=${`flex: ${column.flexRatio}`}
-                        >
-                          ${column.dataType.format(row.data)}
-                        </td>
-                      `,
-                    )}
+          ${
+            !this.isLoading
+              ? this.sortedRows.map(
+                  (row, index) => html`
+                    <tr
+                      role="row"
+                      @click=${(e: MouseEvent) => this.onRowClick(e, row, index)}
+                      @dblclick=${() => this.onRowDoubleClick(row)}
+                      @keydown=${(e: KeyboardEvent) =>
+                        this.onRowKeyDown(e, row, index)}
+                      class=${this.isSelected(row) ? "row-selected" : ""}
+                      aria-selected=${this.isSelected(row)}
+                      data-row-selected=${this.isSelected(row)}
+                      data-id=${row.id}
+                      id=${"row-" + row.id}
+                    >
+                      ${this.visibleColumns.map(
+                        (column) => html`
+                          <td
+                            role="gridcell"
+                            style=${`flex: ${column.flexRatio}`}
+                          >
+                            ${column.dataType.format(row.data)}
+                          </td>
+                        `,
+                      )}
+                    </tr>
+                  `,
+                )
+              : html`
+                  <tr role="row">
+                    <td role="gridcell" class="no-data">Loading...</td>
                   </tr>
-                `,
-              )
-            : html`
-                <tr role="row">
-                  <td role="gridcell" class="no-data">Loading...</td>
-                </tr>
-              `}
-          ${!this.isLoading && this.sortedRows.length === 0
-            ? html`
-                <tr role="row">
-                  <td role="gridcell" class="no-data">${this.noDataText}</td>
-                </tr>
-              `
-            : null}
+                `
+          }
+          ${
+            !this.isLoading && this.sortedRows.length === 0
+              ? html`
+                  <tr role="row">
+                    <td role="gridcell" class="no-data">${this.noDataText}</td>
+                  </tr>
+                `
+              : null
+          }
         </tbody>
       </table>
     `;

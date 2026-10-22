@@ -16,7 +16,6 @@
     "sourceMap": true,
     "inlineSources": true,
     "rootDir": ".",
-    "baseUrl": ".",
     "skipLibCheck": true,
     "declaration": true,
     "allowJs": true,
