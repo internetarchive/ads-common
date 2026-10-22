@@ -1,6 +1,6 @@
 {
   "name": "@internetarchive/vault-metadata",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Displays metadata as formatted by the Internet Archive's Vault application.",
   "main": "./src/index.ts",
   "module": "./dist/index.js",
